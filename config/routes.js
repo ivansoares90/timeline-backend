@@ -9,5 +9,7 @@
  */
 
 module.exports.routes = {
-    'POST /users': 'UserController.create'
+    'POST /users': 'UserController.create',
+    'POST /login': 'UserController.login',
+    'DELETE /logout': 'UserController.logout'
 };

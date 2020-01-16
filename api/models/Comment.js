@@ -7,14 +7,20 @@
 
 module.exports = {
   attributes: {
-    comment: {
+    postId: {
+      model: 'post'
+    },
+    text: {
       required: true,
       type: 'string'
     },
     timestamp: {
       type: 'string',
       columnType: 'datetime'
-    }
+    },
+    userId: {
+      model: 'user'
+    },
   }
 };
 

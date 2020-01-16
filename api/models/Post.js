@@ -7,6 +7,13 @@
 
 module.exports = {
   attributes: {
+    userId: {
+      model: 'user'
+    },
+    comments: {
+      collection: 'comment',
+      via: 'postId'
+    },
     text: {
       required: true,
       type: 'string'
@@ -14,9 +21,6 @@ module.exports = {
     timestamp: {
       type: 'string',
       columnType: 'datetime'
-    },
-    comments: {
-      model: 'Comment'
     }
   }
 };

@@ -7,6 +7,10 @@
 
 module.exports = {
   attributes: {
+    posts: {
+      collection: 'post',
+      via: 'userId'
+    },
     username: {
       required: true,
       unique: true,
@@ -15,9 +19,6 @@ module.exports = {
     password: {
       required: true,
       type: 'string'
-    },
-    posts: {
-      model: 'Post'
     },
   },
   customToJSON: function () {
