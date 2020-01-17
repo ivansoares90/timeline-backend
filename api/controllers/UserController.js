@@ -11,28 +11,19 @@ module.exports = {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(402).json({
+            return res.status(422).json({
                 msg: 'Invalid params.'
             })
         }
 
-        Passwords.encryptPassword({
-            password
-        }).exec({
-            error: (err) => {
-                return res.serverError(err);
-            },
-            success: async (encryptedPassword) => {
-                const createdUser = await User.create({
-                    username,
-                    password: encryptedPassword,
-                }).fetch().catch(err => res.serverError(err));
-        
-                req.session.user = createdUser.id;
+        const createdUser = await User.create({
+            username,
+            password,
+        }).fetch().catch(err => res.serverError(err));
 
-                return res.ok(createdUser);
-            }
-        })  
+        req.session.user = createdUser.id;
+
+        return res.ok(createdUser);
     },
 
     async login(req, res) {
@@ -68,12 +59,24 @@ module.exports = {
         req.session.user = null;
 
         return res.ok();
+    },
+    async find(req, res) {
+        const user = await User.find({
+            id: req.session.user
+        });
+
+        if(user.length === 0) return res.notFound();
+
+        return res.ok(user);
+    },
+    async findOne(req, res) {
+        const user = await User.findOne({
+            id: req.params.id
+        });
+
+        if(!user) return res.notFound();
+
+        return res.ok(user);
     }
-    /*async find(req, res) {
-        const users = await User.find().catch(err => res.serverError(err));
- 
-        if(users.length === 0) return res.notFound();
-        return res.status(200).json(users);
-    }*/
 };
 

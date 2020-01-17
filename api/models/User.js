@@ -1,3 +1,5 @@
+const Passwords = require('machinepack-passwords');
+
 /**
  * User.js
  *
@@ -9,6 +11,10 @@ module.exports = {
   attributes: {
     posts: {
       collection: 'post',
+      via: 'userId'
+    },
+    comments: {
+      collection: 'comment',
       via: 'userId'
     },
     username: {
@@ -24,5 +30,18 @@ module.exports = {
   customToJSON: function () {
     return _.omit(this, ['password']);
   },
+  beforeCreate: function (user, cb) {
+    Passwords.encryptPassword({
+      password: user.password
+    }).exec({
+      error: (err) => {
+        return cb(err);
+      },
+      success: async (encryptedPassword) => {
+        user.password = encryptedPassword;
+        cb();
+      }
+    })
+  }
 };
 

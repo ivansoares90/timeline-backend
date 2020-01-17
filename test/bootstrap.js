@@ -7,7 +7,7 @@ global.chai = require('chai');
 global.should = chai.should();
 
 before(function (done) {
-    this.timeout(5000);
+    this.timeout(10000);
 
     sails.lift({
         log: {
