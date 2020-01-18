@@ -59,7 +59,7 @@ module.exports = {
 
         const user = await User.find({
             id: req.session.user
-        }).populate('posts');
+        });
 
         if(user.length === 0) return res.notFound();
 
@@ -70,14 +70,14 @@ module.exports = {
         
         const { username, password } = req.body;
 
-        const user = await User.update({
+        const user = await User.updateOne({
             id: req.session.user
         }).set({
             username,
             password
-        }).fetch();
+        });
 
-        if(user.length === 0) return res.notFound();
+        if(!user) return res.notFound();
 
         return res.ok(user);
     },

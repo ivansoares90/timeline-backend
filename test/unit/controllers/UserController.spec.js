@@ -36,15 +36,6 @@ describe('POST /users', () => {
 
         response.status.should.be.equal(500);
     });
-
-    /*it('should return status 422 if param names are invalid', async () => {
-        const response = await agent.post('/users').send({
-            uzername: "john_doe",
-            pazzword: "123456"
-        });
-
-        response.status.should.be.equal(422);
-    })*/
 })
 
 describe('POST /login', () => {
@@ -106,7 +97,7 @@ describe('GET /me', () => {
         done();
     })
 
-    it("should return logged in user with posts", async () => {
+    it("should return logged in user", async () => {
         const createdUser = await User.create({
             username: 'john_doe',
             password: '12345'
@@ -140,7 +131,7 @@ describe('GET /me', () => {
     })
 });
 
-describe('PATCH /me', () => {
+describe('PUT /me', () => {
     before(function (done) {
         agent = request.agent(sails.hooks.http.app);
 
@@ -162,7 +153,7 @@ describe('PATCH /me', () => {
             password: '12345'
         });
 
-        const response = await agent.patch('/me').send({
+        const response = await agent.put('/me').send({
             username: 'john_doe_updated',
             password: '123456'
         });
@@ -182,12 +173,18 @@ describe('PATCH /me', () => {
             password: '12345'
         }).fetch();
 
-        const response = await agent.patch('/me').send({
+        const response = await agent.put('/me').send({
             username: 'john_doe_updated',
             password: '123456'
         });
 
         response.status.should.be.equal(403);
+
+        const notUpdatedUser = await User.findOne({
+            id: createdUser.id
+        });
+
+        notUpdatedUser.username.should.be.equal('john_doe');
     })
 })
 
