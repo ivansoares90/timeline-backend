@@ -18,10 +18,6 @@ module.exports = {
       required: true,
       type: 'string'
     },
-    timestamp: {
-      type: 'string',
-      columnType: 'datetime'
-    }
   }
 };
 

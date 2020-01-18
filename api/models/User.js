@@ -42,6 +42,19 @@ module.exports = {
         cb();
       }
     })
+  },
+  beforeUpdate: function (user, cb) {
+    Passwords.encryptPassword({
+      password: user.password
+    }).exec({
+      error: (err) => {
+        return cb(err);
+      },
+      success: async (encryptedPassword) => {
+        user.password = encryptedPassword;
+        cb();
+      }
+    })
   }
 };
 

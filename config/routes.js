@@ -10,9 +10,15 @@
 
 module.exports.routes = {
     'POST /users': 'UserController.create',
-    'GET /users': 'UserController.find',
-    'GET /users/:id': 'UserController.findOne',
+    'GET /me': 'UserController.findLoggedInUser',
+    'PATCH /me': 'UserController.updateLoggedInUser',
+
+   // 'GET /users/:id': 'UserController.findOne',
+  //  'DELETE /users/:id': 'UserController.delete',
 
     'POST /login': 'UserController.login',
-    'DELETE /logout': 'UserController.logout'
+    'DELETE /logout': 'UserController.logout',
+
+    'POST /posts': 'PostController.create',
+    'GET /posts': 'PostController.find'
 };

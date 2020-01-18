@@ -37,14 +37,14 @@ describe('POST /users', () => {
         response.status.should.be.equal(500);
     });
 
-    it('should return status 422 if param names are invalid', async () => {
+    /*it('should return status 422 if param names are invalid', async () => {
         const response = await agent.post('/users').send({
             uzername: "john_doe",
             pazzword: "123456"
         });
 
         response.status.should.be.equal(422);
-    })
+    })*/
 })
 
 describe('POST /login', () => {
@@ -100,7 +100,7 @@ describe('DELETE /logout', () => {
     });
 })
 
-describe('GET /users', () => {
+describe('GET /me', () => {
     before(function (done) {
         agent = request.agent(sails.hooks.http.app);
         done();
@@ -117,7 +117,7 @@ describe('GET /users', () => {
             password: '12345'
         });
 
-        const loggedInUserResponse = await agent.get('/users');
+        const loggedInUserResponse = await agent.get('/me');
 
         loggedInUserResponse.status.should.be.equal(200);
         loggedInUserResponse.body[0].should.have.property('id', createdUser.id);
@@ -130,8 +130,68 @@ describe('GET /users', () => {
 
         response.status.should.be.equal(404);
     });
+
+    it('should return forbidden if user is not logged in', async () => {
+        await agent.delete('/logout');
+
+        const loggedInUserResponse = await agent.get('/me');
+
+        loggedInUserResponse.status.should.be.equal(403);
+    })
 });
 
+describe('PATCH /me', () => {
+    before(function (done) {
+        agent = request.agent(sails.hooks.http.app);
+
+        done();
+    })
+
+    beforeEach( async () => {
+        await agent.delete('/logout');
+    })
+
+    it('should update logged in user', async () => {
+        const createdUser = await User.create({
+            username: 'john_doe',
+            password: '12345'
+        }).fetch();
+
+        const loginResponse = await agent.post('/login').send({
+            username: 'john_doe',
+            password: '12345'
+        });
+
+        const response = await agent.patch('/me').send({
+            username: 'john_doe_updated',
+            password: '123456'
+        });
+
+        response.status.should.be.equal(200);
+
+        const updatedUser = await User.findOne({
+            id: createdUser.id
+        });
+
+        updatedUser.username.should.be.equal('john_doe_updated');
+    });
+
+    it('should return forbidden if user is not logged in', async () => {
+        const createdUser = await User.create({
+            username: 'john_doe',
+            password: '12345'
+        }).fetch();
+
+        const response = await agent.patch('/me').send({
+            username: 'john_doe_updated',
+            password: '123456'
+        });
+
+        response.status.should.be.equal(403);
+    })
+})
+
+/*
 describe('GET /users/:id', () => {
     before(function (done) {
         agent = request.agent(sails.hooks.http.app);
@@ -159,3 +219,34 @@ describe('GET /users/:id', () => {
         response.status.should.be.equal(404);
     });
 });
+
+
+*/
+
+/*
+describe('DELETE /users/:id', () => {
+    before(function (done) {
+        agent = request.agent(sails.hooks.http.app);
+        done();
+    })
+
+    it("should delete the user with the passed id", async () => {
+        const createdUser = await User.create({
+            username: 'john_doe',
+            password: '12345'
+        }).fetch();
+
+        const response = await agent.delete('/users/' + createdUser.id);
+
+        response.status.should.be.equal(200);
+        response.body.should.be.an('object');
+        response.body.should.have.property('id', createdUser.id);
+        response.body.should.have.property('username', 'john_doe');
+        response.body.should.not.have.property('password');
+    });
+
+    it('should return not found if tried to delete user that doesnt exist', async () => {
+        const response = await agent.delete('/users/1');
+        response.status.should.be.equal(404);
+    })
+});*/

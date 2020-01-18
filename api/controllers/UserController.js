@@ -10,12 +10,6 @@ module.exports = {
     async create(req, res) {
         const { username, password } = req.body;
 
-        if (!username || !password) {
-            return res.status(422).json({
-                msg: 'Invalid params.'
-            })
-        }
-
         const createdUser = await User.create({
             username,
             password,
@@ -60,10 +54,28 @@ module.exports = {
 
         return res.ok();
     },
-    async find(req, res) {
+    async findLoggedInUser(req, res) {
+        if(!req.session.user) return res.forbidden();
+
         const user = await User.find({
             id: req.session.user
-        });
+        }).populate('posts');
+
+        if(user.length === 0) return res.notFound();
+
+        return res.ok(user);
+    },
+    async updateLoggedInUser(req, res) {
+        if(!req.session.user) return res.forbidden();
+        
+        const { username, password } = req.body;
+
+        const user = await User.update({
+            id: req.session.user
+        }).set({
+            username,
+            password
+        }).fetch();
 
         if(user.length === 0) return res.notFound();
 
@@ -77,6 +89,16 @@ module.exports = {
         if(!user) return res.notFound();
 
         return res.ok(user);
-    }
+    },
+
+   /* async delete(req, res) {
+        const deletedUser = await User.destroyOne({
+            id: req.params.id
+        });
+
+        if(!deletedUser) return res.notFound();
+
+        return res.ok(deletedUser);
+    }*/
 };
 

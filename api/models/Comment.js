@@ -14,10 +14,6 @@ module.exports = {
       required: true,
       type: 'string'
     },
-    timestamp: {
-      type: 'string',
-      columnType: 'datetime'
-    },
     userId: {
       model: 'user'
     },
