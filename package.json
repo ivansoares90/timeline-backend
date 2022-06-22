@@ -6,7 +6,7 @@
   "keywords": [],
   "dependencies": {
     "@sailshq/lodash": "^3.10.3",
-    "async": "^3.1.0",
+    "async": "^3.2.2",
     "jest": "^24.9.0",
     "machinepack-passwords": "^2.3.0",
     "nested-pop": "^0.1.4",
